@@ -558,27 +558,25 @@ export default function HeroSection() {
                   width: "56px",
                   height: "56px",
                   borderRadius: "50%",
-                  backgroundColor: "rgba(255,255,255,0.15)",
+                  backgroundColor: "#FDFBF7",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  color: "#fff",
-                  border: "1px solid rgba(255,255,255,0.3)",
+                  color: "#1C1917",
+                  border: "none",
                   cursor: "pointer",
-                  backdropFilter: "blur(12px)",
-                  WebkitBackdropFilter: "blur(12px)",
                   transition: "all 0.3s cubic-bezier(0.25, 1, 0.5, 1)",
-                  boxShadow: "0 8px 25px rgba(0,0,0,0.2)",
+                  boxShadow: "0 8px 25px rgba(0,0,0,0.3)",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.25)";
-                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.6)";
+                  e.currentTarget.style.backgroundColor = "#FFFFFF";
                   e.currentTarget.style.transform = "scale(1.05)";
+                  e.currentTarget.style.boxShadow = "0 12px 30px rgba(0,0,0,0.4)";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.15)";
-                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)";
+                  e.currentTarget.style.backgroundColor = "#FDFBF7";
                   e.currentTarget.style.transform = "scale(1)";
+                  e.currentTarget.style.boxShadow = "0 8px 25px rgba(0,0,0,0.3)";
                 }}
                 onMouseDown={(e) => (e.currentTarget.style.transform = "scale(0.95)")}
                 onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
@@ -613,27 +611,25 @@ export default function HeroSection() {
                   width: "56px",
                   height: "56px",
                   borderRadius: "50%",
-                  backgroundColor: "rgba(255,255,255,0.15)",
+                  backgroundColor: "#FDFBF7",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  color: "#fff",
-                  border: "1px solid rgba(255,255,255,0.3)",
+                  color: "#1C1917",
+                  border: "none",
                   cursor: "pointer",
-                  backdropFilter: "blur(12px)",
-                  WebkitBackdropFilter: "blur(12px)",
                   transition: "all 0.3s cubic-bezier(0.25, 1, 0.5, 1)",
-                  boxShadow: "0 8px 25px rgba(0,0,0,0.2)",
+                  boxShadow: "0 8px 25px rgba(0,0,0,0.3)",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.25)";
-                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.6)";
+                  e.currentTarget.style.backgroundColor = "#FFFFFF";
                   e.currentTarget.style.transform = "scale(1.05)";
+                  e.currentTarget.style.boxShadow = "0 12px 30px rgba(0,0,0,0.4)";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.15)";
-                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)";
+                  e.currentTarget.style.backgroundColor = "#FDFBF7";
                   e.currentTarget.style.transform = "scale(1)";
+                  e.currentTarget.style.boxShadow = "0 8px 25px rgba(0,0,0,0.3)";
                 }}
                 onMouseDown={(e) => (e.currentTarget.style.transform = "scale(0.94)")}
                 onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
