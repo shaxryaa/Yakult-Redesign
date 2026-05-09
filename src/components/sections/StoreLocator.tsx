@@ -1,115 +1,115 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Search, MapPin } from "lucide-react";
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
+import { useState } from "react";
+// import Image from "next/image";
 
 export default function StoreLocator() {
-  const ctaRef = useRef<HTMLDivElement>(null);
+  const [zipCode, setZipCode] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
 
-  useEffect(() => {
-    if (ctaRef.current) {
-      gsap.fromTo(
-        ctaRef.current,
-        { scale: 0.95, opacity: 0 },
-        {
-          scale: 1,
-          opacity: 1,
-          duration: 0.8,
-          ease: "back.out(1.2)",
-          scrollTrigger: {
-            trigger: ctaRef.current,
-            start: "top 80%",
-            toggleActions: "play none none reverse"
-          }
-        }
-      );
-    }
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!zipCode) return;
     
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill());
-    };
-  }, []);
+    setIsSearching(true);
+    // Simulate API call
+    setTimeout(() => setIsSearching(false), 800);
+  };
 
   return (
-    <section id="store-locator" className="section-padding" style={{ backgroundColor: "var(--primary)", color: "white" }}>
+    <section id="store-locator" style={{ backgroundColor: "var(--bg-light)", padding: "var(--space-32) 0", position: "relative" }}>
       <div className="container">
-        <div 
-          ref={ctaRef}
-          style={{ 
-            textAlign: "center", 
-            maxWidth: "800px", 
-            margin: "0 auto",
-            backgroundColor: "rgba(255, 255, 255, 0.1)",
-            padding: "var(--space-12)",
-            borderRadius: "32px",
-            backdropFilter: "blur(10px)",
-            border: "1px solid rgba(255, 255, 255, 0.2)"
-          }}
-        >
-          <div style={{ display: "flex", justifyContent: "center", marginBottom: "var(--space-6)" }}>
-            <MapPin size={48} />
-          </div>
-          <h2 style={{ fontSize: "3rem", color: "white", marginBottom: "var(--space-4)" }}>Ready to Elevate Your Health?</h2>
-          <p style={{ fontSize: "1.25rem", opacity: 0.9, marginBottom: "var(--space-8)" }}>
-            Find Yakult near you and start your journey to a balanced microbiome today.
-          </p>
+        
+        <div className="grid grid-cols-2" style={{ gap: "var(--space-12)", alignItems: "center" }}>
+          
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-6)" }}>
+            <div>
+              <h2 style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)", marginBottom: "var(--space-2)" }}>
+                Find Yakult <br />
+                <span className="font-instrument text-primary" style={{ fontWeight: "normal" }}>near you.</span>
+              </h2>
+              <p style={{ color: "var(--text-muted)", fontSize: "1.25rem" }}>
+                Available in the refrigerated section of most major grocery stores and local markets.
+              </p>
+            </div>
 
-          <form 
-            onSubmit={(e) => e.preventDefault()}
-            style={{
-              display: "flex",
-              maxWidth: "500px",
-              margin: "0 auto",
-              position: "relative"
-            }}
-          >
-            <input 
-              type="text" 
-              placeholder="Enter your zip code..." 
-              style={{
-                width: "100%",
-                padding: "var(--space-4) var(--space-6)",
-                paddingRight: "120px",
-                borderRadius: "9999px",
-                border: "none",
-                fontSize: "1.125rem",
-                outline: "none",
-                boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
-                color: "var(--text-dark)"
-              }}
-            />
-            <button 
-              type="submit"
-              style={{
-                position: "absolute",
-                right: "8px",
-                top: "8px",
-                bottom: "8px",
-                backgroundColor: "var(--primary)",
-                color: "white",
-                border: "none",
-                borderRadius: "9999px",
-                padding: "0 var(--space-6)",
-                fontWeight: "bold",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: "var(--space-2)",
-                transition: "background-color 0.2s"
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#c8161d"}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "var(--primary)"}
-            >
-              <Search size={18} />
-              Find
-            </button>
-          </form>
+            <form onSubmit={handleSearch} style={{ display: "flex", gap: "var(--space-2)", marginTop: "var(--space-4)" }}>
+              <input 
+                type="text" 
+                placeholder="Enter Zip Code or City"
+                value={zipCode}
+                onChange={(e) => setZipCode(e.target.value)}
+                style={{
+                  flex: 1,
+                  padding: "var(--space-4)",
+                  borderRadius: "12px",
+                  border: "1px solid rgba(0,0,0,0.1)",
+                  fontSize: "1.125rem",
+                  fontFamily: "var(--font-body)",
+                  boxShadow: "inset 0 2px 4px rgba(0,0,0,0.02)"
+                }}
+              />
+              <button 
+                type="submit"
+                disabled={isSearching}
+                style={{
+                  backgroundColor: "var(--primary)",
+                  color: "white",
+                  border: "none",
+                  padding: "0 var(--space-8)",
+                  borderRadius: "12px",
+                  fontWeight: "800",
+                  fontSize: "1rem",
+                  cursor: isSearching ? "wait" : "pointer",
+                  opacity: isSearching ? 0.8 : 1,
+                  transition: "transform 0.2s ease",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.05em"
+                }}
+                onMouseEnter={(e) => !isSearching && (e.currentTarget.style.transform = "scale(1.02)")}
+                onMouseLeave={(e) => !isSearching && (e.currentTarget.style.transform = "scale(1)")}
+              >
+                {isSearching ? "Searching..." : "Search"}
+              </button>
+            </form>
+
+            <div style={{ display: "flex", gap: "var(--space-6)", marginTop: "var(--space-2)" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
+                <div style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "#22c55e" }} />
+                <span>In Stock</span>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
+                <div style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "#eab308" }} />
+                <span>Limited Stock</span>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ position: "relative", height: "500px", borderRadius: "24px", overflow: "hidden", backgroundColor: "#E5E5E5" }}>
+            {/* Map Placeholder */}
+            <div style={{ 
+              position: "absolute", 
+              inset: 0, 
+              display: "flex", 
+              alignItems: "center", 
+              justifyContent: "center",
+              background: "linear-gradient(45deg, #e5e5e5 25%, #d4d4d4 25%, #d4d4d4 50%, #e5e5e5 50%, #e5e5e5 75%, #d4d4d4 75%, #d4d4d4 100%)",
+              backgroundSize: "20px 20px"
+            }}>
+              <div style={{
+                backgroundColor: "white",
+                padding: "var(--space-6)",
+                borderRadius: "16px",
+                boxShadow: "0 20px 40px -10px rgba(0,0,0,0.1)",
+                textAlign: "center"
+              }}>
+                <div style={{ fontSize: "2rem", color: "var(--primary)", marginBottom: "var(--space-2)" }}>📍</div>
+                <h3 style={{ fontSize: "1.25rem", marginBottom: "var(--space-1)" }}>Map View Ready</h3>
+                <p style={{ color: "var(--text-muted)", fontSize: "0.875rem" }}>Integrate with Google Maps API</p>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>

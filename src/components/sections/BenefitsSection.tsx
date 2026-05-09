@@ -1,116 +1,175 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Shield, Zap, Heart } from "lucide-react";
 
-// Register ScrollTrigger
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
 const benefits = [
   {
-    icon: <Shield size={32} style={{ color: "var(--primary)" }} />,
-    title: "Boost Immunity",
-    desc: "Contains exclusive L. casei Shirota strain that reaches the intestines alive to support your natural defenses."
+    title: "Balances Microbiome",
+    description: "Delivers billions of live Lactobacillus casei Shirota to your intestines, ensuring a healthy balance of good bacteria.",
+    icon: "🦠",
+    number: "01",
   },
   {
-    icon: <Zap size={32} style={{ color: "var(--secondary)" }} />,
-    title: "Improve Digestion",
-    desc: "Helps balance the flora in your digestive tract, promoting better nutrient absorption and smoother digestion."
+    title: "Boosts Immunity",
+    description: "By maintaining gut health, Yakult helps strengthen your body’s natural defenses and immune system.",
+    icon: "🛡️",
+    number: "02",
   },
   {
-    icon: <Heart size={32} style={{ color: "#10B981" }} />,
-    title: "Daily Wellness",
-    desc: "A simple, delicious addition to your morning routine that sets a healthy foundation for the rest of your day."
+    title: "Improves Digestion",
+    description: "Regular consumption aids in smoother digestion and helps prevent common gastrointestinal issues.",
+    icon: "⚕️",
+    number: "03",
+  },
+  {
+    title: "Enhances Wellbeing",
+    description: "A healthy gut is linked to better mood, energy levels, and overall physical and mental wellbeing.",
+    icon: "✨",
+    number: "04",
   }
 ];
 
 export default function BenefitsSection() {
-  const sectionRef = useRef<HTMLElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
 
-  useEffect(() => {
-    if (!sectionRef.current) return;
+  cardsRef.current = [];
 
-    // Fade and slide up animation using ScrollTrigger
-    gsap.fromTo(
-      cardsRef.current,
-      { y: 50, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.8,
-        stagger: 0.2, // cards animate sequentially
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%", // starts when the top of the section hits 80% from the top of the viewport
-          toggleActions: "play none none reverse"
-        }
+  const addToCardsRef = (el: HTMLDivElement) => {
+    if (el && !cardsRef.current.includes(el)) {
+      cardsRef.current.push(el);
+    }
+  };
+
+  useGSAP(() => {
+    // Heading reveal
+    gsap.from(headingRef.current, {
+      y: 50,
+      opacity: 0,
+      duration: 1,
+      scrollTrigger: {
+        trigger: headingRef.current,
+        start: "top 80%",
       }
-    );
+    });
 
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill());
-    };
-  }, []);
+    // Staggered cards reveal
+    cardsRef.current.forEach((card) => {
+      gsap.from(card, {
+        y: 100,
+        opacity: 0,
+        duration: 0.8,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: card,
+          start: "top 85%",
+        }
+      });
+    });
 
-  // Applying Miller's Law: We limit to 3 distinct benefits to prevent cognitive overload.
-  // Applying Aesthetic and minimalist design: Using cards with generous whitespace.
+  }, { scope: containerRef });
+
   return (
-    <section id="benefits" ref={sectionRef} className="section-padding" style={{ backgroundColor: "var(--surface)" }}>
+    <section 
+      id="benefits" 
+      ref={containerRef}
+      style={{ backgroundColor: "var(--surface)", padding: "var(--space-32) 0", position: "relative" }}
+    >
       <div className="container">
-        <div style={{ textAlign: "center", marginBottom: "var(--space-12)", maxWidth: "800px", margin: "0 auto var(--space-16)" }}>
-          <h2 style={{ fontSize: "2.5rem" }}>The Power of <span className="text-secondary">Probiotics</span></h2>
-          <p style={{ color: "var(--text-muted)", fontSize: "1.25rem" }}>
-            Decades of scientific research packed into one daily bottle to help your body perform at its best.
-          </p>
+        
+        <div style={{ textAlign: "center", marginBottom: "var(--space-24)" }}>
+          <h2 ref={headingRef} style={{ fontSize: "clamp(2.5rem, 5vw, 4.5rem)", maxWidth: "800px", margin: "0 auto" }}>
+            The Science of <br/>
+            <span className="text-primary font-instrument" style={{ fontWeight: "normal", display: "inline-block" }}>Inner Harmony.</span>
+          </h2>
         </div>
 
-        <div className="grid grid-cols-3" style={{ gap: "var(--space-8)" }}>
+        <div className="grid grid-cols-2" style={{ gap: "var(--space-8)" }}>
           {benefits.map((benefit, index) => (
-            <div
-              key={index}
-              ref={el => { cardsRef.current[index] = el; }}
+            <div 
+              key={index} 
+              ref={addToCardsRef}
               style={{
                 backgroundColor: "var(--bg-light)",
-                padding: "var(--space-8)",
+                padding: "var(--space-12)",
                 borderRadius: "24px",
-                border: "1px solid rgba(0,0,0,0.05)",
                 display: "flex",
                 flexDirection: "column",
                 gap: "var(--space-4)",
-                transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                position: "relative",
+                overflow: "hidden",
+                transition: "transform 0.4s ease, box-shadow 0.4s ease",
+                cursor: "default"
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = "translateY(-10px)";
-                e.currentTarget.style.boxShadow = "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)";
+                e.currentTarget.style.boxShadow = "0 30px 40px -20px rgba(154, 0, 2, 0.15)";
+                const desc = e.currentTarget.querySelector('.card-description') as HTMLElement;
+                if (desc) {
+                  desc.style.maxHeight = "150px";
+                  desc.style.opacity = "1";
+                  desc.style.marginTop = "var(--space-4)";
+                }
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = "translateY(0)";
                 e.currentTarget.style.boxShadow = "none";
+                const desc = e.currentTarget.querySelector('.card-description') as HTMLElement;
+                if (desc) {
+                  desc.style.maxHeight = "0px";
+                  desc.style.opacity = "0";
+                  desc.style.marginTop = "0";
+                }
               }}
             >
-              <div style={{
-                width: "64px",
-                height: "64px",
-                borderRadius: "16px",
-                backgroundColor: "white",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                boxShadow: "0 4px 6px rgba(0,0,0,0.05)"
-              }}>
-                {benefit.icon}
+              <div 
+                className="font-instrument" 
+                style={{ 
+                  position: "absolute", 
+                  top: "-20px", 
+                  right: "10px", 
+                  fontSize: "10rem", 
+                  color: "rgba(154, 0, 2, 0.05)",
+                  lineHeight: "1",
+                  userSelect: "none",
+                  zIndex: 0
+                }}
+              >
+                {benefit.number}
               </div>
-              <h3 style={{ fontSize: "1.5rem", marginBottom: 0 }}>{benefit.title}</h3>
-              <p style={{ color: "var(--text-muted)", margin: 0 }}>{benefit.desc}</p>
+              
+              <div style={{ fontSize: "3rem", zIndex: 1 }}>{benefit.icon}</div>
+              
+              <h3 style={{ fontSize: "2rem", marginBottom: 0, zIndex: 1 }}>{benefit.title}</h3>
+              
+              {/* Card expansion content */}
+              <div 
+                className="card-description" 
+                style={{ 
+                  maxHeight: "0px", 
+                  overflow: "hidden", 
+                  transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)", 
+                  opacity: 0, 
+                  margin: 0,
+                  zIndex: 1
+                }}
+              >
+                <p style={{ color: "var(--text-muted)", fontSize: "1.125rem", maxWidth: "90%", margin: 0 }}>
+                  {benefit.description}
+                </p>
+              </div>
             </div>
           ))}
         </div>
+
       </div>
     </section>
   );

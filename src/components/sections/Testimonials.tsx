@@ -1,146 +1,152 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useRef } from "react";
 import gsap from "gsap";
-import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 const testimonials = [
   {
-    id: 1,
+    quote: "A daily ritual that completely transformed my digestion. I simply can't start my morning without it.",
     name: "Sarah Jenkins",
-    role: "Fitness Instructor",
-    text: "Since adding Yakult to my morning routine, I've noticed a significant improvement in my digestion and overall energy levels. It's such a simple habit with massive returns."
+    role: "Wellness Coach"
   },
   {
-    id: 2,
+    quote: "The science is real. Within two weeks, I noticed a significant boost in my energy and immunity.",
     name: "Dr. Marcus Chen",
-    role: "Nutritionist",
-    text: "I often recommend probiotics to my clients. The L. casei Shirota strain in Yakult has decades of clinical backing, making it one of the most reliable choices on the market."
+    role: "Nutritionist"
   },
   {
-    id: 3,
+    quote: "Small bottle, enormous impact. It's the most delicious and effective probiotic I've ever tasted.",
     name: "Elena Rodriguez",
-    role: "Busy Mom",
-    text: "Between work and the kids, my immune system used to take a beating. Yakult is a delicious way for the whole family to support our gut health every single day."
+    role: "Fitness Enthusiast"
+  },
+  {
+    quote: "My whole family drinks Yakult now. It's the one health habit we all actually enjoy keeping.",
+    name: "James Wilson",
+    role: "Father of Three"
   }
 ];
 
 export default function Testimonials() {
-  const [activeIdx, setActiveIdx] = useState(0);
-  const slideRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
 
-  // Applying Hick's Law: We show one simple testimonial at a time, with clear Next/Prev actions.
-  // This reduces decision fatigue and cognitive load compared to a massive grid of reviews.
-  const handleNext = () => {
-    setActiveIdx((prev) => (prev + 1) % testimonials.length);
-  };
+  useGSAP(() => {
+    const cards = gsap.utils.toArray(".testimonial-card");
+    const container = containerRef.current;
+    if (!container) return;
+    
+    // We want the total scroll distance to match the width of the cards that overflow
+    // Calculate total movement needed: Total width of track - window width
+    
+    gsap.to(cards, {
+      xPercent: -100 * (cards.length - 1),
+      ease: "none",
+      scrollTrigger: {
+        trigger: containerRef.current,
+        pin: true,
+        scrub: 1,
+        // The scroll distance
+        end: () => "+=" + (trackRef.current?.offsetWidth || 0)
+      }
+    });
 
-  const handlePrev = () => {
-    setActiveIdx((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-  };
-
-  useEffect(() => {
-    if (slideRef.current) {
-      gsap.fromTo(
-        slideRef.current,
-        { opacity: 0, x: 20 },
-        { opacity: 1, x: 0, duration: 0.5, ease: "power2.out" }
-      );
-    }
-  }, [activeIdx]);
+  }, { scope: containerRef });
 
   return (
-    <section id="testimonials" className="section-padding" style={{ backgroundColor: "#FFF5F5" }}>
-      <div className="container">
-        <div style={{ textAlign: "center", marginBottom: "var(--space-12)" }}>
-          <h2 style={{ fontSize: "2.5rem" }}>What People <span className="text-primary">Say</span></h2>
-        </div>
+    <section 
+      id="testimonials" 
+      ref={containerRef}
+      style={{ 
+        backgroundColor: "var(--primary)", 
+        color: "var(--surface)", 
+        paddingTop: "var(--space-32)",
+        paddingBottom: "var(--space-32)",
+        overflow: "hidden",
+      }}
+    >
+      <div className="container" style={{ marginBottom: "var(--space-16)" }}>
+        <h2 style={{ fontSize: "clamp(2.5rem, 5vw, 4.5rem)", color: "var(--surface)" }}>
+          Don&apos;t just take <span className="font-instrument" style={{ fontWeight: "normal" }}>our word for it.</span>
+        </h2>
+      </div>
 
-        <div style={{ position: "relative", maxWidth: "800px", margin: "0 auto" }}>
-          
+      {/* Horizontal Scroll Track */}
+      <div 
+        ref={trackRef}
+        style={{ 
+          display: "flex", 
+          gap: "var(--space-8)",
+          paddingLeft: "calc((100vw - 1440px) / 2 + var(--space-6))", // Align with container padding
+          paddingRight: "var(--space-8)",
+          width: "max-content"
+        }}
+      >
+        {testimonials.map((test, index) => (
           <div 
-            ref={slideRef}
+            key={index} 
+            className="testimonial-card"
             style={{
-              backgroundColor: "white",
+              width: "clamp(300px, 40vw, 600px)",
+              backgroundColor: "rgba(255,255,255,0.05)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              backdropFilter: "blur(10px)",
               padding: "var(--space-12)",
-              borderRadius: "32px",
-              boxShadow: "0 20px 25px -5px rgba(227, 27, 35, 0.05)",
-              textAlign: "center"
+              borderRadius: "24px",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              gap: "var(--space-8)"
             }}
           >
-            <Quote size={48} style={{ color: "var(--primary)", opacity: 0.2, margin: "0 auto var(--space-6)" }} />
-            <p style={{ fontSize: "1.5rem", fontStyle: "italic", marginBottom: "var(--space-8)", color: "var(--text-dark)" }}>
-              &quot;{testimonials[activeIdx].text}&quot;
-            </p>
             <div>
-              <h4 style={{ fontSize: "1.25rem", marginBottom: "var(--space-1)" }}>{testimonials[activeIdx].name}</h4>
-              <p style={{ color: "var(--text-muted)", margin: 0 }}>{testimonials[activeIdx].role}</p>
+              <span className="font-instrument" style={{ fontSize: "6rem", color: "var(--bg-light)", opacity: 0.3, lineHeight: 0.5, display: "block", marginBottom: "var(--space-4)" }}>&quot;</span>
+              <p className="font-instrument" style={{ fontSize: "clamp(1.5rem, 2.5vw, 2.5rem)", lineHeight: 1.2, color: "var(--surface)" }}>
+                {test.quote}
+              </p>
+            </div>
+            
+            <div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div style={{ fontWeight: "800", fontSize: "1.25rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>{test.name}</div>
+                {/* Microinteraction: Like Button */}
+                <button 
+                  onClick={(e) => {
+                    const btn = e.currentTarget;
+                    const isLiked = btn.getAttribute('data-liked') === 'true';
+                    btn.setAttribute('data-liked', (!isLiked).toString());
+                    
+                    // Simple microinteraction animation
+                    btn.style.transform = isLiked ? "scale(1)" : "scale(1.3)";
+                    btn.style.color = isLiked ? "rgba(255,255,255,0.2)" : "#ff4757";
+                    
+                    setTimeout(() => {
+                      if (!isLiked) btn.style.transform = "scale(1.1)";
+                    }, 150);
+                  }}
+                  data-liked="false"
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    fontSize: "1.5rem",
+                    color: "rgba(255,255,255,0.2)",
+                    transition: "all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+                    outline: "none"
+                  }}
+                >
+                  ♥
+                </button>
+              </div>
+              <div style={{ color: "rgba(255,255,255,0.6)" }}>{test.role}</div>
             </div>
           </div>
-
-          <button 
-            onClick={handlePrev}
-            style={{
-              position: "absolute",
-              left: "-24px",
-              top: "50%",
-              transform: "translateY(-50%)",
-              width: "48px",
-              height: "48px",
-              borderRadius: "50%",
-              backgroundColor: "white",
-              border: "1px solid rgba(0,0,0,0.1)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              boxShadow: "0 4px 6px rgba(0,0,0,0.05)",
-              transition: "all 0.2s"
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "var(--primary)";
-              e.currentTarget.style.color = "white";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "white";
-              e.currentTarget.style.color = "var(--text-dark)";
-            }}
-          >
-            <ChevronLeft size={24} />
-          </button>
-
-          <button 
-            onClick={handleNext}
-            style={{
-              position: "absolute",
-              right: "-24px",
-              top: "50%",
-              transform: "translateY(-50%)",
-              width: "48px",
-              height: "48px",
-              borderRadius: "50%",
-              backgroundColor: "white",
-              border: "1px solid rgba(0,0,0,0.1)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              boxShadow: "0 4px 6px rgba(0,0,0,0.05)",
-              transition: "all 0.2s"
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "var(--primary)";
-              e.currentTarget.style.color = "white";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "white";
-              e.currentTarget.style.color = "var(--text-dark)";
-            }}
-          >
-            <ChevronRight size={24} />
-          </button>
-          
-        </div>
+        ))}
       </div>
     </section>
   );

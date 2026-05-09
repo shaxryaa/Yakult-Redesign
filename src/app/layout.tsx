@@ -1,11 +1,22 @@
 import type { Metadata } from "next";
-import { Inter, Outfit } from "next/font/google";
+import { Poppins, Playfair_Display } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
+import Loader from "@/components/ui/Loader";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
+// Poppins — geometric sans-serif for structural headlines and body
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-poppins",
+});
+
+// Playfair Display — editorial serif for italic accent spans
+const playfairDisplay = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  style: ["italic", "normal"],
+  variable: "--font-playfair",
+});
 
 export const metadata: Metadata = {
   title: "Yakult | Know Your Gut",
@@ -19,10 +30,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${outfit.variable}`} style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-        <Header />
-        <main style={{ flex: 1, marginTop: "80px" }}>{children}</main>
-        <Footer />
+      <body
+        className={`${poppins.variable} ${playfairDisplay.variable}`}
+        style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}
+      >
+        <Loader />
+        {children}
       </body>
     </html>
   );
